@@ -13,6 +13,7 @@ $adminchannel = "#adminchan" # Users opped in this channel will be able to use a
 # Set to true to enable a command
 
 $enable_raw = false
+$enable_eval = false
 $enable_quit = false
 $enable_join = false
 $enable_part = false

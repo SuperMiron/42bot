@@ -36,6 +36,7 @@ bot = Cinch::Bot.new do
     m.user.notice("!help")
     if is_admin?(m.user)
       if $enable_raw; m.user.notice("!raw") end
+      if $enable_eval; m.user.notice("!eval") end
       if $enable_quit; m.user.notice("!quit") end
       if $enable_join; m.user.notice("!join") end
     end
@@ -57,6 +58,17 @@ bot = Cinch::Bot.new do
       if is_admin?(m.user)
         rawcmd = m.message.gsub(/^!raw /, "")
         bot.irc.send(rawcmd)
+        m.reply "#{m.user}: Done."
+      else
+        m.reply "#{m.user}: You are not an admin."
+      end
+    end
+  end
+
+  on :message, /^!eval .*$/ do |m|
+    if $enable_eval
+      if is_admin?(m.user)
+        eval(m.message.gsub(/^!eval /, ""))
         m.reply "#{m.user}: Done."
       else
         m.reply "#{m.user}: You are not an admin."
