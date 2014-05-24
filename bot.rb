@@ -21,34 +21,40 @@ bot = Cinch::Bot.new do
     exit
   end
 
-  adminchannel = $adminchannel
-
   BOLD = ""
+
+  helpers do
+    def is_admin?(user)
+      true if Channel($adminchannel).opped?(user)
+    end
+  end
+
+  ### COMMANDS
 
   on :message, /^!(help|commands)( .*)?$/ do |m|
     m.user.notice("#{BOLD}-- Commands available to you --#{BOLD}")
     m.user.notice("!help")
-    if Channel(adminchannel).opped?(m.user)
+    if is_admin?(m.user)
       if $enable_raw; m.user.notice("!raw") end
       if $enable_quit; m.user.notice("!quit") end
       if $enable_join; m.user.notice("!join") end
     end
     if $enable_part_chanop; m.user.notice("!part")
-    elsif $enable_part && Channel(adminchannel).opped?(m.user); m.user.notice("!part")
+    elsif $enable_part && is_admin?(m.user); m.user.notice("!part")
     end
-    if $enable_nick && Channel(adminchannel).opped?(m.user); m.user.notice("!nick") end
-    if $enable_op && Channel(adminchannel).opped?(m.user); m.user.notice("!op") end
+    if $enable_nick && is_admin?(m.user); m.user.notice("!nick") end
+    if $enable_op && is_admin?(m.user); m.user.notice("!op") end
     if $enable_slap; m.user.notice("!slap") end
     if $enable_eat; m.user.notice("!eat") end
     m.user.notice("#{BOLD}--    End of command list    --#{BOLD}")
   end
 
 
-  ### ADMIN COMMANDS
+  ## admin
 
   on :message, /^!raw .*$/ do |m|
     if $enable_raw
-      if Channel(adminchannel).opped?(m.user)
+      if is_admin?(m.user)
         rawcmd = m.message.gsub(/^!raw /, "")
         bot.irc.send(rawcmd)
         m.reply "#{m.user}: Done."
@@ -60,7 +66,7 @@ bot = Cinch::Bot.new do
 
   on :message, /^!quit( .*)?$/ do |m|
     if $enable_quit
-      if Channel(adminchannel).opped?(m.user)
+      if is_admin?(m.user)
         exit
       else
         m.reply "#{m.user}: You are not an admin."
@@ -70,7 +76,7 @@ bot = Cinch::Bot.new do
 
   on :message, /^!join .*$/ do |m|
     if $enable_join
-      if Channel(adminchannel).opped?(m.user)
+      if is_admin?(m.user)
         bot.irc.send("JOIN " + m.message.gsub(/^!join /, ""))
         m.reply "#{m.user}: Done."
       else
@@ -81,7 +87,7 @@ bot = Cinch::Bot.new do
 
   on :message, /^!part .*$/ do |m|
     if $enable_part
-      if Channel(adminchannel).opped?(m.user)
+      if is_admin?(m.user)
         bot.irc.send("PART " + m.message.gsub(/^!part /, ""))
         m.reply "#{m.user}: Done."
       else
@@ -92,7 +98,7 @@ bot = Cinch::Bot.new do
 
   on :message, /^!nick .*$/ do |m|
     if $enable_nick
-      if Channel(adminchannel).opped?(m.user)
+      if is_admin?(m.user)
         bot.irc.send("NICK " + m.message.gsub(/^!nick /, ""))
         m.reply "#{m.user}: Done."
       else
@@ -103,7 +109,7 @@ bot = Cinch::Bot.new do
 
   on :channel, /^!op( .*)?$/ do |m|
     if $enable_op
-	  if Channel(adminchannel).opped?(m.user)
+	  if is_admin?(m.user)
 	    if m.channel.opped?(bot.nick)
           m.channel.op(m.user)
         else
@@ -115,11 +121,11 @@ bot = Cinch::Bot.new do
     end
   end
 
-  ### USER COMMANDS
+  ## user
 
   on :channel, /^!part?$/ do |m|
     if $enable_part_chanop
-      if Channel(adminchannel).opped?(m.user) || m.channel.opped?(m.user)
+      if is_admin?(m.user) || m.channel.opped?(m.user)
         bot.irc.send("PART #{m.channel}")									
       else
         m.reply "#{m.user}: You are not opped in #{m.channel}."
