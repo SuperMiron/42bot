@@ -36,6 +36,7 @@ bot = Cinch::Bot.new do
     if $enable_part_chanop; m.user.notice("!part")
     elsif $enable_part && Channel(adminchannel).opped?(m.user); m.user.notice("!part")
     end
+    if $enable_nick && Channel(adminchannel).opped?(m.user); m.user.notice("!nick") end
     if $enable_op && Channel(adminchannel).opped?(m.user); m.user.notice("!op") end
     if $enable_slap; m.user.notice("!slap") end
     if $enable_eat; m.user.notice("!eat") end
@@ -82,6 +83,17 @@ bot = Cinch::Bot.new do
     if $enable_part
       if Channel(adminchannel).opped?(m.user)
         bot.irc.send("PART " + m.message.gsub(/^!part /, ""))
+        m.reply "#{m.user}: Done."
+      else
+        m.reply "#{m.user}: You are not an admin."
+      end
+    end
+  end
+
+  on :message, /^!nick .*$/ do |m|
+    if $enable_nick
+      if Channel(adminchannel).opped?(m.user)
+        bot.irc.send("NICK " + m.message.gsub(/^!nick /, ""))
         m.reply "#{m.user}: Done."
       else
         m.reply "#{m.user}: You are not an admin."
