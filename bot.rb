@@ -6,7 +6,7 @@ bot = Cinch::Bot.new do
     configure do |c|
       c.nick = $nick
       c.user = $user
-      c.realname = "42bot"
+      c.realname = "https://github.com/SuperMiron/42bot"
       if ( $sasl_username && $sasl_password )
         c.sasl.username = $sasl_username
         c.sasl.password = $sasl_password
@@ -92,7 +92,7 @@ bot = Cinch::Bot.new do
   on :channel, /^!op( .*)?$/ do |m|
     if $enable_op
 	  if Channel(adminchannel).opped?(m.user)
-	    if m.channel.opped?("MironBot")
+	    if m.channel.opped?(bot.nick)
           m.channel.op(m.user)
         else
           m.reply "#{m.user}: I am not opped in #{m.channel}."
