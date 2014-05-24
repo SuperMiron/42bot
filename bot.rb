@@ -29,16 +29,16 @@ bot = Cinch::Bot.new do
     m.user.notice("#{BOLD}-- Commands available to you --#{BOLD}")
     m.user.notice("!help")
     if Channel(adminchannel).opped?(m.user)
-      m.user.notice("!raw")
-      m.user.notice("!quit")
-      m.user.notice("!join")
+      if $enable_raw; m.user.notice("!raw") end
+      if $enable_quit; m.user.notice("!quit") end
+      if $enable_join; m.user.notice("!join") end
     end
-    m.user.notice("!part")
-    if Channel(adminchannel).opped?(m.user)
-      m.user.notice("!op")
+    if $enable_part_chanop; m.user.notice("!part")
+    elsif $enable_part && Channel(adminchannel).opped?(m.user); m.user.notice("!part")
     end
-    m.user.notice("!slap")
-    m.user.notice("!eat")
+    if $enable_op && Channel(adminchannel).opped?(m.user); m.user.notice("!op") end
+    if $enable_slap; m.user.notice("!slap") end
+    if $enable_eat; m.user.notice("!eat") end
     m.user.notice("#{BOLD}--    End of command list    --#{BOLD}")
   end
 
