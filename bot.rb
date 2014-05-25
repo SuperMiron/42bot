@@ -69,7 +69,7 @@ bot = Cinch::Bot.new do
         "Donald Tusk",
         "school",
         "the library",
-        "Bill Gates' cat"
+        "Bill Gates's cat"
       ]
       w4 = [
         "while",
