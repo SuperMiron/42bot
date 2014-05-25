@@ -79,6 +79,8 @@ bot = Cinch::Bot.new do
   on :message, /^!quit( .*)?$/ do |m|
     if $enable_quit
       if is_admin?(m.user)
+        m.reply "Disconnecting...", prefix = true
+        sleep(3)
         exit
       else
         m.reply "You are not an admin.", prefix = true
