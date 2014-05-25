@@ -53,7 +53,8 @@ bot = Cinch::Bot.new do
         "She",
         "We",
         "Potatoes",
-        "Tomatoes"
+        "Tomatoes",
+        "06R13a05i04n07b08o09w03s"
       ]
       w2 = [
         "went to",
@@ -61,7 +62,8 @@ bot = Cinch::Bot.new do
         "played with",
         "ate",
         "drank",
-        "smelled"
+        "smelled",
+        "danced in"
       ]
       w3 = [
         "the Kremlin",
@@ -69,7 +71,8 @@ bot = Cinch::Bot.new do
         "Donald Tusk",
         "school",
         "the library",
-        "Bill Gates's cat"
+        "Bill Gates's cat",
+        "the White House"
       ]
       w4 = [
         "while",
@@ -80,11 +83,14 @@ bot = Cinch::Bot.new do
         "sleeping in",
         "translating",
         "learning",
-        "flying to"
+        "flying to",
+        "staring at"
       ]
       w6 = [
         "Angela Merkel's",
         "Chuck Norris's",
+        "Conchita Wurst's",
+        "her",
         "my",
         "your"
       ]
@@ -93,7 +99,8 @@ bot = Cinch::Bot.new do
         "head",
         "face",
         "cheese",
-        "language"
+        "language",
+        "mustache"
       ]
       m.reply w1.sample + " " + w2.sample + " " + w3.sample + " " + w4.sample + " " + w5.sample + " " + w6.sample + " " + w7.sample + ".", prefix = true
     end
