@@ -2,7 +2,7 @@ require 'cinch'
 require_relative 'config'
 
 bot = Cinch::Bot.new do
-  if $nick && $user && $server && $port && $channels && $adminchannel
+  if $nick && $user && $server && $port && $channels && $adminchannel && $enable_as
     configure do |c|
       c.nick = $nick
       c.user = $user
@@ -26,6 +26,76 @@ bot = Cinch::Bot.new do
   helpers do
     def is_admin?(user)
       true if Channel($adminchannel).opped?(user)
+    end
+  end
+
+  ### ARTIFICIAL STUPIDITY
+
+  on :channel, /^#{$nick}.? .*?$/ do |m|
+    if m.message.gsub(/\?$/, "") != m.message # messages ending with a question mark
+      qreplies = [
+        "how much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+        "ok *explodes*",
+        "wow, rude.",
+        "yea k whatever",
+        "go eat an elephant.",
+        "05y04a07y 08r09a03i11n10b12o02w06s13!",
+        "fascinating.",
+        "Ukrainian plane went Chinese while trying to be American.",
+        "Latvian potato turned Egyptian after dancing Russian."
+      ]
+      m.reply qreplies.sample, prefix = true
+    else
+      w1 = [
+        "Pie",
+        "I",
+        "He",
+        "She",
+        "We",
+        "Potatoes",
+        "Tomatoes"
+      ]
+      w2 = [
+        "went to",
+        "sat on",
+        "played with",
+        "ate",
+        "drank",
+        "smelled"
+      ]
+      w3 = [
+        "the Kremlin",
+        "Indonesia",
+        "Donald Tusk",
+        "school",
+        "the library",
+        "Bill Gates' cat"
+      ]
+      w4 = [
+        "while",
+        "before",
+        "after"
+      ]
+      w5 = [
+        "sleeping in",
+        "translating",
+        "learning",
+        "flying to"
+      ]
+      w6 = [
+        "Angela Merkel's",
+        "Chuck Norris's",
+        "my",
+        "your"
+      ]
+      w7 = [
+        "house",
+        "head",
+        "face",
+        "cheese",
+        "language"
+      ]
+      m.reply w1.sample + " " + w2.sample + " " + w3.sample + " " + w4.sample + " " + w5.sample + " " + w6.sample + " " + w7.sample + ".", prefix = true
     end
   end
 
@@ -113,7 +183,8 @@ bot = Cinch::Bot.new do
   on :message, /^!nick .*$/ do |m|
     if $cmd_nick
       if is_admin?(m.user)
-        bot.irc.send("NICK " + m.message.gsub(/^!nick /, ""))
+        $nick = m.message.gsub(/^!nick /, "")
+        bot.irc.send("NICK #{$nick}")
         m.reply "Done.", prefix = true
       else
         m.reply "You are not an admin.", prefix = true

@@ -9,6 +9,7 @@ $ssl = false # Set to true if you want it to use ssl
 $port = "6667" # If you set the above to true, change the port here
 $channels = ["#chan1","#chan2","#adminchan"] # Channels you want the bot to join
 $adminchannel = "#adminchan" # Users opped in this channel will be able to use admin commands (anywhere)
+$enable_as = false # Set to true if you want to enable artificial stupidity
 
 # Set to true to enable a command
 
