@@ -32,19 +32,32 @@ bot = Cinch::Bot.new do
   ### ARTIFICIAL STUPIDITY
 
   on :channel, /^#{$nick}.? .*?$/ do |m|
-    if m.message.gsub(/\?$/, "") != m.message # messages ending with a question mark
-      qreplies = [
-        "how much wood would a woodchuck chuck if a woodchuck could chuck wood?",
-        "ok *explodes*",
-        "wow, rude.",
-        "yea k whatever",
-        "go eat an elephant.",
-        "05y04a07y 08r09a03i11n10b12o02w06s13!",
-        "fascinating.",
-        "Ukrainian plane went Chinese while trying to be American.",
-        "Latvian potato turned Egyptian after dancing Russian."
-      ]
-      m.reply qreplies.sample, prefix = true
+    msg = m.message.gsub(/^#{$nick}.? /, "")
+    if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
+      if msg.gsub(/^who is /, "") != msg || msg.gsub(/^who are /, "") != msg || msg = "who am I?"
+        replies = [
+          "an elephant",
+          "a potato",
+          "a cucumber",
+          "a walrus",
+          "UrD4D",
+          "UrM0M",
+          "no idea"
+        ]
+      else
+        replies = [
+          "how much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+          "ok *explodes*",
+          "wow, rude.",
+          "yea k whatever",
+          "go eat an elephant.",
+          "05y04a07y 08r09a03i11n10b12o02w06s13!",
+          "fascinating.",
+          "Ukrainian plane went Chinese while trying to be American.",
+          "Latvian potato turned Egyptian after dancing Russian."
+        ]
+      end
+      m.reply replies.sample, prefix = true
     else
       w1 = [
         "Pie",
