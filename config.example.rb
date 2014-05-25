@@ -12,13 +12,13 @@ $adminchannel = "#adminchan" # Users opped in this channel will be able to use a
 
 # Set to true to enable a command
 
-$enable_raw = false
-$enable_eval = false
-$enable_quit = false
-$enable_join = false
-$enable_part = false
-$enable_part_chanop = false
-$enable_nick = false
-$enable_op = false
-$enable_slap = false
-$enable_eat = false
+$cmd_raw = false
+$cmd_eval = false
+$cmd_quit = false
+$cmd_join = false
+$cmd_part = false
+$cmd_part_chanop = false
+$cmd_nick = false
+$cmd_op = false
+$cmd_slap = false
+$cmd_eat = false

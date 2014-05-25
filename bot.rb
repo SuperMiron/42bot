@@ -35,18 +35,18 @@ bot = Cinch::Bot.new do
     m.user.notice("#{BOLD}-- Commands available to you --#{BOLD}")
     m.user.notice("!help")
     if is_admin?(m.user)
-      if $enable_raw; m.user.notice("!raw") end
-      if $enable_eval; m.user.notice("!eval") end
-      if $enable_quit; m.user.notice("!quit") end
-      if $enable_join; m.user.notice("!join") end
+      if $cmd_raw; m.user.notice("!raw") end
+      if $cmd_eval; m.user.notice("!eval") end
+      if $cmd_quit; m.user.notice("!quit") end
+      if $cmd_join; m.user.notice("!join") end
     end
-    if $enable_part_chanop; m.user.notice("!part")
-    elsif $enable_part && is_admin?(m.user); m.user.notice("!part")
+    if $cmd_part_chanop; m.user.notice("!part")
+    elsif $cmd_part && is_admin?(m.user); m.user.notice("!part")
     end
-    if $enable_nick && is_admin?(m.user); m.user.notice("!nick") end
-    if $enable_op && is_admin?(m.user); m.user.notice("!op") end
-    if $enable_slap; m.user.notice("!slap") end
-    if $enable_eat; m.user.notice("!eat") end
+    if $cmd_nick && is_admin?(m.user); m.user.notice("!nick") end
+    if $cmd_op && is_admin?(m.user); m.user.notice("!op") end
+    if $cmd_slap; m.user.notice("!slap") end
+    if $cmd_eat; m.user.notice("!eat") end
     m.user.notice("#{BOLD}--    End of command list    --#{BOLD}")
   end
 
@@ -54,7 +54,7 @@ bot = Cinch::Bot.new do
   ## admin
 
   on :message, /^!raw .*$/ do |m|
-    if $enable_raw
+    if $cmd_raw
       if is_admin?(m.user)
         rawcmd = m.message.gsub(/^!raw /, "")
         bot.irc.send(rawcmd)
@@ -66,7 +66,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!eval .*$/ do |m|
-    if $enable_eval
+    if $cmd_eval
       if is_admin?(m.user)
         eval(m.message.gsub(/^!eval /, ""))
         m.reply "Done.", prefix = true
@@ -77,7 +77,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!quit( .*)?$/ do |m|
-    if $enable_quit
+    if $cmd_quit
       if is_admin?(m.user)
         m.reply "Disconnecting...", prefix = true
         sleep(3)
@@ -89,7 +89,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!join .*$/ do |m|
-    if $enable_join
+    if $cmd_join
       if is_admin?(m.user)
         bot.irc.send("JOIN " + m.message.gsub(/^!join /, ""))
         m.reply "Done.", prefix = true
@@ -100,7 +100,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!part .*$/ do |m|
-    if $enable_part
+    if $cmd_part
       if is_admin?(m.user)
         bot.irc.send("PART " + m.message.gsub(/^!part /, ""))
         m.reply "Done.", prefix = true
@@ -111,7 +111,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!nick .*$/ do |m|
-    if $enable_nick
+    if $cmd_nick
       if is_admin?(m.user)
         bot.irc.send("NICK " + m.message.gsub(/^!nick /, ""))
         m.reply "Done.", prefix = true
@@ -122,7 +122,7 @@ bot = Cinch::Bot.new do
   end
 
   on :channel, /^!op( .*)?$/ do |m|
-    if $enable_op
+    if $cmd_op
 	  if is_admin?(m.user)
 	    if m.channel.opped?(bot.nick)
           m.channel.op(m.user)
@@ -138,7 +138,7 @@ bot = Cinch::Bot.new do
   ## user
 
   on :channel, /^!part?$/ do |m|
-    if $enable_part_chanop
+    if $cmd_part_chanop
       if is_admin?(m.user) || m.channel.opped?(m.user)
         bot.irc.send("PART #{m.channel}")									
       else
@@ -148,13 +148,13 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!slap( .*)?$/ do |m|
-    if $enable_slap
+    if $cmd_slap
       m.action_reply "slaps #{m.user} with a 1989 Macintosh"
     end
   end
 
   on :message, /^!eat( .*)?$/ do |m|
-    if $enable_eat
+    if $cmd_eat
       m.action_reply "eats" + m.message.gsub(/^!eat/, "")
     end
   end
