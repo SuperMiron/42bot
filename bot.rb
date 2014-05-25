@@ -34,7 +34,9 @@ bot = Cinch::Bot.new do
   on :channel, /^#{$nick}.? .*?$/ do |m|
     msg = m.message.gsub(/^#{$nick}.? /, "")
     if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
-      if msg.gsub(/^who is /, "") != msg || msg.gsub(/^who are /, "") != msg || msg = "who am I?"
+      if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
+        replies = ["I am your father."]
+      elsif msg.gsub(/^[Ww]ho is /, "") != msg || msg.gsub(/^[Ww]ho are /, "") != msg || msg.gsub(/^[Ww]ho am I?$/, "") != msg
         replies = [
           "an elephant",
           "a potato",
