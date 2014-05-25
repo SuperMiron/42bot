@@ -2,7 +2,7 @@ require 'cinch'
 require_relative 'config'
 
 bot = Cinch::Bot.new do
-  if $nick && $user && $server && $port && $channels && $adminchannel && $enable_as
+  if $nick && $user && $server && $port && $channels && $adminchannel && $as_channels
     configure do |c|
       c.nick = $nick
       c.user = $user
@@ -32,92 +32,94 @@ bot = Cinch::Bot.new do
   ### ARTIFICIAL STUPIDITY
 
   on :channel, /^#{$nick}.? .*?$/ do |m|
-    msg = m.message.gsub(/^#{$nick}.? /, "")
-    if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
-      if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
-        replies = ["I am your father."]
-      elsif msg.gsub(/^[Ww]ho is /, "") != msg || msg.gsub(/^[Ww]ho are /, "") != msg || msg.gsub(/^[Ww]ho am I?$/, "") != msg
-        replies = [
-          "an elephant",
-          "a potato",
-          "a cucumber",
-          "a walrus",
-          "UrD4D",
-          "UrM0M",
-          "no idea"
-        ]
+    if $as_channels.include?(m.channel) || $as_channels = "all"
+      msg = m.message.gsub(/^#{$nick}.? /, "")
+      if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
+        if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
+          replies = ["I am your father."]
+        elsif msg.gsub(/^[Ww]ho is /, "") != msg || msg.gsub(/^[Ww]ho are /, "") != msg || msg.gsub(/^[Ww]ho am I?$/, "") != msg
+          replies = [
+            "an elephant",
+            "a potato",
+            "a cucumber",
+            "a walrus",
+            "UrD4D",
+            "UrM0M",
+            "no idea"
+          ]
+        else
+          replies = [
+            "how much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+            "ok *explodes*",
+            "wow, rude.",
+            "yea k whatever",
+            "go eat an elephant.",
+            "05y04a07y 08r09a03i11n10b12o02w06s13!",
+            "fascinating.",
+            "Ukrainian plane went Chinese while trying to be American.",
+            "Latvian potato turned Egyptian after dancing Russian."
+          ]
+        end
+        m.reply replies.sample, prefix = true
       else
-        replies = [
-          "how much wood would a woodchuck chuck if a woodchuck could chuck wood?",
-          "ok *explodes*",
-          "wow, rude.",
-          "yea k whatever",
-          "go eat an elephant.",
-          "05y04a07y 08r09a03i11n10b12o02w06s13!",
-          "fascinating.",
-          "Ukrainian plane went Chinese while trying to be American.",
-          "Latvian potato turned Egyptian after dancing Russian."
+        w1 = [
+          "Pie",
+          "I",
+          "He",
+          "She",
+          "We",
+          "Potatoes",
+          "Tomatoes",
+          "06R13a05i04n07b08o09w03s"
         ]
+        w2 = [
+          "went to",
+          "sat on",
+          "played with",
+          "ate",
+          "drank",
+          "smelled",
+          "danced in"
+        ]
+        w3 = [
+          "the Kremlin",
+          "Indonesia",
+          "Donald Tusk",
+          "school",
+          "the library",
+          "Bill Gates's cat",
+          "the White House"
+        ]
+        w4 = [
+          "while",
+          "before",
+          "after"
+        ]
+        w5 = [
+          "sleeping in",
+          "translating",
+          "learning",
+          "flying to",
+          "staring at"
+        ]
+        w6 = [
+          "Angela Merkel's",
+          "Chuck Norris's",
+          "Conchita Wurst's",
+          "her",
+          "my",
+          "your"
+        ]
+        w7 = [
+          "house",
+          "head",
+          "face",
+          "cheese",
+          "language",
+          "mustache"
+        ]
+        m.reply w1.sample + " " + w2.sample + " " + w3.sample + " " + w4.sample + " " + w5.sample + " " + w6.sample + " " + w7.sample + ".", prefix = true
       end
-      m.reply replies.sample, prefix = true
-    else
-      w1 = [
-        "Pie",
-        "I",
-        "He",
-        "She",
-        "We",
-        "Potatoes",
-        "Tomatoes",
-        "06R13a05i04n07b08o09w03s"
-      ]
-      w2 = [
-        "went to",
-        "sat on",
-        "played with",
-        "ate",
-        "drank",
-        "smelled",
-        "danced in"
-      ]
-      w3 = [
-        "the Kremlin",
-        "Indonesia",
-        "Donald Tusk",
-        "school",
-        "the library",
-        "Bill Gates's cat",
-        "the White House"
-      ]
-      w4 = [
-        "while",
-        "before",
-        "after"
-      ]
-      w5 = [
-        "sleeping in",
-        "translating",
-        "learning",
-        "flying to",
-        "staring at"
-      ]
-      w6 = [
-        "Angela Merkel's",
-        "Chuck Norris's",
-        "Conchita Wurst's",
-        "her",
-        "my",
-        "your"
-      ]
-      w7 = [
-        "house",
-        "head",
-        "face",
-        "cheese",
-        "language",
-        "mustache"
-      ]
-      m.reply w1.sample + " " + w2.sample + " " + w3.sample + " " + w4.sample + " " + w5.sample + " " + w6.sample + " " + w7.sample + ".", prefix = true
     end
   end
 

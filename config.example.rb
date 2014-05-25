@@ -7,9 +7,11 @@ $user = "42bot" # The username you want the bot to have
 $server = "irc.example" # The IRC server you want the bot to connect to
 $ssl = false # Set to true if you want it to use ssl
 $port = "6667" # If you set the above to true, change the port here
-$channels = ["#chan1","#chan2","#adminchan"] # Channels you want the bot to join
+$channels = ["#chan1", "#chan2", "#adminchan"] # Channels you want the bot to join
 $adminchannel = "#adminchan" # Users opped in this channel will be able to use admin commands (anywhere)
-$enable_as = false # Set to true if you want to enable artificial stupidity
+$as_channels = [] # If you leave this as it is, artificial stupidity will be disabled. If you want to enable it,
+                  # just add the channels to the array (syntax same as in $channels). If you want to enable it for
+                  # all channels:  $as_channels = "all"
 
 # Set to true to enable a command
 
