@@ -12,6 +12,7 @@ $adminchannel = "#adminchan" # Users opped in this channel will be able to use a
 $as_channels = [] # If you leave this as it is, artificial stupidity will be disabled. If you want to enable it,
                   # just add the channels to the array (syntax same as in $channels). If you want to enable it for
                   # all channels:  $as_channels = "all"
+$no_as_channels = [] # Channels to disable artificial stupidity in. Overrides $as_channels, same syntax.
 
 # Set to true to enable a command
 
