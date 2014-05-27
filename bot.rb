@@ -32,7 +32,7 @@ bot = Cinch::Bot.new do
   ### ARTIFICIAL STUPIDITY
 
   on :channel, /^#{$nick}.? .*?$/ do |m|
-    if ( $as_channels.include?(m.channel) || $as_channels = "all" ) && !$no_as_channels.include?(m.channel) && $no_as_channels != "all"
+    if ( $as_channels.include?(m.channel) || $as_channels == "all" ) && !$no_as_channels.include?(m.channel) && $no_as_channels != "all"
       msg = m.message.gsub(/^#{$nick}.? /, "")
       if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
         if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
