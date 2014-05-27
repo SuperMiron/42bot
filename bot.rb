@@ -150,8 +150,7 @@ bot = Cinch::Bot.new do
   on :message, /^!raw .*$/ do |m|
     if $cmd_raw
       if is_admin?(m.user)
-        rawcmd = m.message.gsub(/^!raw /, "")
-        bot.irc.send(rawcmd)
+        bot.irc.send(m.message.gsub(/^!raw /, ""))
         m.reply "Done.", prefix = true
       else
         m.reply "You are not an admin.", prefix = true
@@ -185,7 +184,7 @@ bot = Cinch::Bot.new do
   on :message, /^!join .*$/ do |m|
     if $cmd_join
       if is_admin?(m.user)
-        bot.irc.send("JOIN " + m.message.gsub(/^!join /, ""))
+        Channel(m.message.gsub(/^!join /, "")).join
         m.reply "Done.", prefix = true
       else
         m.reply "You are not an admin.", prefix = true
@@ -196,7 +195,7 @@ bot = Cinch::Bot.new do
   on :message, /^!part .*$/ do |m|
     if $cmd_part
       if is_admin?(m.user)
-        bot.irc.send("PART " + m.message.gsub(/^!part /, ""))
+        Channel(m.message.gsub(/^!part /, "")).part
         m.reply "Done.", prefix = true
       else
         m.reply "You are not an admin.", prefix = true
@@ -207,7 +206,7 @@ bot = Cinch::Bot.new do
   on :message, /^!nick .*$/ do |m|
     if $cmd_nick
       if is_admin?(m.user)
-        bot.irc.send("NICK " + m.message.gsub(/^!nick /, ""))
+        bot.nick = m.message.gsub(/^!nick /, "")
         m.reply "Done.", prefix = true
       else
         m.reply "You are not an admin.", prefix = true
@@ -234,7 +233,7 @@ bot = Cinch::Bot.new do
   on :channel, /^!part$/ do |m|
     if $cmd_part_chanop
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        bot.irc.send("PART #{m.channel}")									
+        m.channel.part								
       else
         m.reply "You are not opped in #{m.channel}.", prefix = true
       end
