@@ -31,13 +31,13 @@ bot = Cinch::Bot.new do
 
   ### ARTIFICIAL STUPIDITY
 
-  on :channel, /^#{$nick}.? .*?$/ do |m|
-    if ( $as_channels.include?(m.channel) || $as_channels == "all" ) && !$no_as_channels.include?(m.channel) && $no_as_channels != "all"
-      msg = m.message.gsub(/^#{$nick}.? /, "")
+  on :channel, /^.+ .*$/ do |m|
+    if m.message.gsub(/^#{bot.nick}.? .*$/, "") != m.message && (( $as_channels.include?(m.channel) || $as_channels == "all" ) && !$no_as_channels.include?(m.channel) && $no_as_channels != "all")
+      msg = m.message.gsub(/^#{bot.nick}.? /, "")
       if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
         if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
           replies = ["I am your father."]
-        elsif msg.gsub(/^[Ww]ho is /, "") != msg || msg.gsub(/^[Ww]ho are /, "") != msg || msg.gsub(/^[Ww]ho am I?$/, "") != msg
+        elsif msg.gsub(/^[Ww]ho is /, "") != msg || msg.gsub(/^[Ww]ho are /, "") != msg || msg.gsub(/^[Ww]ho am I\?$/, "") != msg
           replies = [
             "an elephant",
             "a potato",
@@ -207,8 +207,7 @@ bot = Cinch::Bot.new do
   on :message, /^!nick .*$/ do |m|
     if $cmd_nick
       if is_admin?(m.user)
-        $nick = m.message.gsub(/^!nick /, "")
-        bot.irc.send("NICK #{$nick}")
+        bot.irc.send("NICK " + m.message.gsub(/^!nick /, ""))
         m.reply "Done.", prefix = true
       else
         m.reply "You are not an admin.", prefix = true
@@ -232,7 +231,7 @@ bot = Cinch::Bot.new do
 
   ## user
 
-  on :channel, /^!part?$/ do |m|
+  on :channel, /^!part$/ do |m|
     if $cmd_part_chanop
       if is_admin?(m.user) || m.channel.opped?(m.user)
         bot.irc.send("PART #{m.channel}")									
