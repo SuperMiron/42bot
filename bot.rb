@@ -57,13 +57,12 @@ bot = Cinch::Bot.new do
           replies = ["I am your father."]
         elsif msg.gsub(/^[Ww]ho is /, "") != msg || msg.gsub(/^[Ww]ho are /, "") != msg || msg.gsub(/^[Ww]ho am I\?$/, "") != msg
           replies = [
-            "an elephant",
-            "a potato",
-            "a cucumber",
-            "a walrus",
-            "UrD4D",
-            "UrM0M",
-            "no idea"
+            "yes",
+            "no",
+            "idk",
+            "otay",
+            "...MOM! IT'S ALIVE!!!",
+            "no u smell weird go away"
           ]
         else
           replies = [
@@ -97,7 +96,8 @@ bot = Cinch::Bot.new do
           "ate",
           "drank",
           "smelled",
-          "danced in"
+          "danced in",
+          "lived in"
         ]
         w3 = [
           "the Kremlin",
