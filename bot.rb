@@ -24,25 +24,27 @@ bot = Cinch::Bot.new do
   BOLD = ""
 
   helpers do
+
     def is_admin?(user)
       true if Channel($adminchannel).opped?(user)
     end
-  end
 
-  def reply(message)
-    m.reply message, prefix = true
-  end
+    def reply(m, message)
+      m.reply message, prefix = true
+    end
 
-  def action(message)
-    m.action_reply message
-  end
+    def action(m, message)
+      m.action_reply message
+    end
 
-  def done
-    reply "Done."
-  end
+    def done(m)
+      reply m, "Done."
+    end
 
-  def noadmin
-    reply "You are not an admin."
+    def noadmin(m)
+      reply m, "You are not an admin."
+    end
+
   end
 
   ### ARTIFICIAL STUPIDITY
@@ -76,7 +78,7 @@ bot = Cinch::Bot.new do
             "Latvian potato turned Egyptian after dancing Russian."
           ]
         end
-        reply replies.sample
+        reply m, replies.sample
       else
         w1 = [
           "Pie",
@@ -134,7 +136,7 @@ bot = Cinch::Bot.new do
           "language",
           "mustache"
         ]
-        reply w1.sample + " " + w2.sample + " " + w3.sample + " " + w4.sample + " " + w5.sample + " " + w6.sample + " " + w7.sample + "."
+        reply m, w1.sample + " " + w2.sample + " " + w3.sample + " " + w4.sample + " " + w5.sample + " " + w6.sample + " " + w7.sample + "."
       end
     end
   end
@@ -167,9 +169,9 @@ bot = Cinch::Bot.new do
     if $cmd_raw
       if is_admin?(m.user)
         bot.irc.send m.message.gsub(/^!raw /, "")
-        done
+        done m
       else
-        noadmin
+        noadmin m
       end
     end
   end
@@ -178,9 +180,9 @@ bot = Cinch::Bot.new do
     if $cmd_eval
       if is_admin?(m.user)
         eval(m.message.gsub(/^!eval /, ""))
-        done
+        done m
       else
-        noadmin
+        noadmin m
       end
     end
   end
@@ -188,11 +190,11 @@ bot = Cinch::Bot.new do
   on :message, /^!quit( .*)?$/ do |m|
     if $cmd_quit
       if is_admin?(m.user)
-        reply "Disconnecting..."
+        reply m, "Disconnecting..."
         sleep(3)
         exit
       else
-        noadmin
+        noadmin m
       end
     end
   end
@@ -201,9 +203,9 @@ bot = Cinch::Bot.new do
     if $cmd_join
       if is_admin?(m.user)
         Channel(m.message.gsub(/^!join /, "")).join
-        done
+        done m
       else
-        noadmin
+        noadmin m
       end
     end
   end
@@ -212,9 +214,9 @@ bot = Cinch::Bot.new do
     if $cmd_part
       if is_admin?(m.user)
         Channel(m.message.gsub(/^!part /, "")).part
-        done
+        done m
       else
-        noadmin
+        noadmin m
       end
     end
   end
@@ -223,9 +225,9 @@ bot = Cinch::Bot.new do
     if $cmd_nick
       if is_admin?(m.user)
         bot.nick = m.message.gsub(/^!nick /, "")
-        done
+        done m
       else
-        noadmin
+        noadmin m
       end
     end
   end
@@ -236,10 +238,10 @@ bot = Cinch::Bot.new do
 	    if m.channel.opped?(bot.nick)
           m.channel.op m.user
         else
-          reply "I am not opped in #{m.channel}."
+          reply m, "I am not opped in #{m.channel}."
         end
       else
-        noadmin
+        noadmin m
       end
     end
   end
@@ -251,20 +253,20 @@ bot = Cinch::Bot.new do
       if is_admin?(m.user) || m.channel.opped?(m.user)
         m.channel.part								
       else
-        reply "You are not opped in #{m.channel}."
+        reply m, "You are not opped in #{m.channel}."
       end
     end
   end
 
   on :message, /^!slap( .*)?$/ do |m|
     if $cmd_slap
-      action "slaps #{m.user} with a 1989 Macintosh"
+      action m, "slaps #{m.user} with a 1989 Macintosh"
     end
   end
 
   on :message, /^!eat( .*)?$/ do |m|
     if $cmd_eat
-      action "eats" + m.message.gsub(/^!eat/, "")
+      action m, "eats" + m.message.gsub(/^!eat/, "")
     end
   end
 end
