@@ -55,7 +55,17 @@ bot = Cinch::Bot.new do
       if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
         if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
           replies = ["I am your father."]
-        elsif msg.gsub(/^[Ww]ho is /, "") != msg || msg.gsub(/^[Ww]ho are /, "") != msg || msg.gsub(/^[Ww]ho am I\?$/, "") != msg
+        elsif msg.gsub(/^[Ww]ho (is |are |am I\?$)/, "") != msg
+          replies = [
+            "an elephant",
+            "a potato",
+            "a cucumber",
+            "a walrus",
+            "UrD4D",
+            "UrM0M",
+            "no idea"
+          ]
+        elsif msg.gsub(/^([Cc]an|[Mm]ay|[Cc]ould|[Ss]hould|[Ww]ould|[Ww]ill|[Dd]id|[Ii]s|[Aa]re) /, "") != msg
           replies = [
             "yes",
             "no",
