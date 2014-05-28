@@ -150,7 +150,7 @@ bot = Cinch::Bot.new do
   on :message, /^!raw .*$/ do |m|
     if $cmd_raw
       if is_admin?(m.user)
-        bot.irc.send(m.message.gsub(/^!raw /, ""))
+        bot.irc.send m.message.gsub(/^!raw /, "")
         m.reply "Done.", prefix = true
       else
         m.reply "You are not an admin.", prefix = true
@@ -218,7 +218,7 @@ bot = Cinch::Bot.new do
     if $cmd_op
 	  if is_admin?(m.user)
 	    if m.channel.opped?(bot.nick)
-          m.channel.op(m.user)
+          m.channel.op m.user
         else
           m.reply "I am not opped in #{m.channel}.", prefix = true
         end
