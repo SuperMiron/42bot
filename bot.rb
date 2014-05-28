@@ -65,7 +65,7 @@ bot = Cinch::Bot.new do
             "UrM0M",
             "no idea"
           ]
-        elsif msg.gsub(/^([Cc]an|[Mm]ay|[Cc]ould|[Ss]hould|[Ww]ould|[Ww]ill|[Dd]id|[Ii]s|[Aa]re) /, "") != msg
+        elsif msg.gsub(/^([Dd]o|[Dd]oes|[Cc]an|[Mm]ay|[Cc]ould|[Ss]hould|[Ww]ould|[Ww]ill|[Dd]id|[Ii]s|[Aa]re) /, "") != msg
           replies = [
             "yes",
             "no",
