@@ -23,10 +23,16 @@ bot = Cinch::Bot.new do
 
   BOLD = ""
 
+  $ignorelist = []
+
   helpers do
 
     def is_admin?(user)
-      true if Channel($adminchannel).opped?(user)
+      if Channel($adminchannel).opped?(user); true else false end
+    end
+
+    def ignored?(user)
+      if ( $ignorelist.include?("#{user.nick}") || $ignorelist.include?("host #{user.host}") ) && !is_admin?(user) && $cmd_ignore; true else false end
     end
 
     def reply(m, message)
@@ -50,7 +56,7 @@ bot = Cinch::Bot.new do
   ### ARTIFICIAL STUPIDITY
 
   on :channel, /^.+ .*$/ do |m|
-    if m.message.gsub(/^#{bot.nick}.? .*$/, "") != m.message && (( $as_channels.include?(m.channel) || $as_channels == "all" ) && !$no_as_channels.include?(m.channel) && $no_as_channels != "all")
+    if !ignored?(m.user) && ( m.message.gsub(/^#{bot.nick}.? .*$/, "") != m.message && ( ( $as_channels.include?(m.channel) || $as_channels == "all" ) && !$no_as_channels.include?(m.channel) && $no_as_channels != "all") )
       msg = m.message.gsub(/^#{bot.nick}.? /, "")
       if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
         if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
@@ -154,29 +160,37 @@ bot = Cinch::Bot.new do
   ### COMMANDS
 
   on :message, /^!(help|commands)( .*)?$/ do |m|
-    m.user.notice("#{BOLD}-- Commands available to you --#{BOLD}")
-    m.user.notice("!help")
-    if is_admin?(m.user)
-      if $cmd_raw; m.user.notice("!raw") end
-      if $cmd_eval; m.user.notice("!eval") end
-      if $cmd_quit; m.user.notice("!quit") end
-      if $cmd_join; m.user.notice("!join") end
+    if !ignored?(m.user)
+      m.user.notice("#{BOLD}-- Commands available to you --#{BOLD}")
+      m.user.notice("!help")
+      if is_admin?(m.user)
+        if $cmd_raw; m.user.notice("!raw") end
+        if $cmd_eval; m.user.notice("!eval") end
+        if $cmd_quit; m.user.notice("!quit") end
+        if $cmd_join; m.user.notice("!join") end
+      end
+      if $cmd_part_chanop; m.user.notice("!part")
+      elsif $cmd_part && is_admin?(m.user); m.user.notice("!part")
+      end
+      if is_admin?(m.user)
+        if $cmd_nick; m.user.notice("!nick") end
+        if $cmd_ignore
+          m.user.notice("!ignore")
+          m.user.notice("!unignore")
+        end
+        if $cmd_op; m.user.notice("!op") end
+      end
+      if $cmd_slap; m.user.notice("!slap") end
+      if $cmd_eat; m.user.notice("!eat") end
+      m.user.notice("#{BOLD}--    End of command list    --#{BOLD}")
     end
-    if $cmd_part_chanop; m.user.notice("!part")
-    elsif $cmd_part && is_admin?(m.user); m.user.notice("!part")
-    end
-    if $cmd_nick && is_admin?(m.user); m.user.notice("!nick") end
-    if $cmd_op && is_admin?(m.user); m.user.notice("!op") end
-    if $cmd_slap; m.user.notice("!slap") end
-    if $cmd_eat; m.user.notice("!eat") end
-    m.user.notice("#{BOLD}--    End of command list    --#{BOLD}")
   end
 
 
   ## admin
 
   on :message, /^!raw .*$/ do |m|
-    if $cmd_raw
+    if $cmd_raw && !ignored?(m.user)
       if is_admin?(m.user)
         bot.irc.send m.message.gsub(/^!raw /, "")
         done m
@@ -187,9 +201,9 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!eval .*$/ do |m|
-    if $cmd_eval
+    if $cmd_eval && !ignored?(m.user)
       if is_admin?(m.user)
-        eval(m.message.gsub(/^!eval /, ""))
+        eval m.message.gsub(/^!eval /, "")
         done m
       else
         noadmin m
@@ -198,7 +212,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!quit( .*)?$/ do |m|
-    if $cmd_quit
+    if $cmd_quit && !ignored?(m.user)
       if is_admin?(m.user)
         reply m, "Disconnecting..."
         sleep(3)
@@ -210,7 +224,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!join .*$/ do |m|
-    if $cmd_join
+    if $cmd_join && !ignored?(m.user)
       if is_admin?(m.user)
         Channel(m.message.gsub(/^!join /, "")).join
         done m
@@ -221,7 +235,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!part .*$/ do |m|
-    if $cmd_part
+    if $cmd_part && !ignored?(m.user)
       if is_admin?(m.user)
         Channel(m.message.gsub(/^!part /, "")).part
         done m
@@ -232,7 +246,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!nick .*$/ do |m|
-    if $cmd_nick
+    if $cmd_nick && !ignored?(m.user)
       if is_admin?(m.user)
         bot.nick = m.message.gsub(/^!nick /, "")
         done m
@@ -242,8 +256,38 @@ bot = Cinch::Bot.new do
     end
   end
 
+  on :message, /^!ignore .*$/ do |m|
+    if $cmd_ignore && !ignored?(m.user)
+      if is_admin?(m.user)
+        if !$ignorelist.include?(m.message.gsub(/^!ignore /, ""))
+          $ignorelist += [m.message.gsub(/^!ignore /, "")]
+          done m
+        else
+          reply m, "#{m.message.gsub(/^!ignore /, "")} is already on the ignore list!"
+        end
+      else
+        noadmin m
+      end
+    end
+  end
+
+  on :message, /^!unignore .*$/ do |m|
+    if $cmd_ignore && !ignored?(m.user)
+      if is_admin?(m.user)
+        if $ignorelist.include?(m.message.gsub(/^!unignore /, ""))
+          $ignorelist -= [m.message.gsub(/^!unignore /, "")]
+          done m
+        else
+          reply m, "#{m.message.gsub(/^!unignore /, "")} is not on the ignore list!"
+        end
+      else
+        noadmin m
+      end
+    end
+  end
+
   on :channel, /^!op( .*)?$/ do |m|
-    if $cmd_op
+    if $cmd_op && !ignored?(m.user)
 	  if is_admin?(m.user)
 	    if m.channel.opped?(bot.nick)
           m.channel.op m.user
@@ -259,9 +303,9 @@ bot = Cinch::Bot.new do
   ## user
 
   on :channel, /^!part$/ do |m|
-    if $cmd_part_chanop
+    if $cmd_part_chanop && !ignored?(m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        m.channel.part								
+        m.channel.part
       else
         reply m, "You are not opped in #{m.channel}."
       end
@@ -269,13 +313,13 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!slap( .*)?$/ do |m|
-    if $cmd_slap
+    if $cmd_slap && !ignored?(m.user)
       action m, "slaps #{m.user} with a 1989 Macintosh"
     end
   end
 
   on :message, /^!eat( .*)?$/ do |m|
-    if $cmd_eat
+    if $cmd_eat && !ignored?(m.user)
       action m, "eats" + m.message.gsub(/^!eat/, "")
     end
   end
