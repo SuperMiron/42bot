@@ -316,11 +316,16 @@ bot = Cinch::Bot.new do
   on :message, /^!ignore .*$/ do |m|
     if $cmd_ignore && !ignored?(m, m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        if !$ignorelist[m.channel].include?(m.message.gsub(/^!ignore /, ""))
-          $ignorelist[m.channel] += [m.message.gsub(/^!ignore /, "")]
-          done m
+        if $ignorelist[m.channel]
+          if !$ignorelist[m.channel].include?(m.message.gsub(/^!ignore /, ""))
+            $ignorelist[m.channel] += [m.message.gsub(/^!ignore /, "")]
+            done m
+          else
+            reply m, "#{m.message.gsub(/^!ignore /, "")} is already on the #{m.channel} ignore list!"
+          end
         else
-          reply m, "#{m.message.gsub(/^!ignore /, "")} is already on the #{m.channel} ignore list!"
+          $ignorelist[m.channel] = [m.message.gsub(/^!ignore /, "")]
+          done m
         end
       else
         reply m, "You are not opped in #{m.channel}."
@@ -331,9 +336,13 @@ bot = Cinch::Bot.new do
   on :message, /^!unignore .*$/ do |m|
     if $cmd_ignore && !ignored?(m, m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        if $ignorelist[m.channel].include?(m.message.gsub(/^!unignore /, ""))
-          $ignorelist[m.channel] -= [m.message.gsub(/^!unignore /, "")]
-          done m
+        if $ignorelist[m.channel]
+          if $ignorelist[m.channel].include?(m.message.gsub(/^!unignore /, ""))
+            $ignorelist[m.channel] -= [m.message.gsub(/^!unignore /, "")]
+            done m
+          else
+            reply m, "#{m.message.gsub(/^!unignore /, "")} is not on the #{m.channel} ignore list!"
+          end
         else
           reply m, "#{m.message.gsub(/^!unignore /, "")} is not on the #{m.channel} ignore list!"
         end
