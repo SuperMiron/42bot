@@ -320,7 +320,9 @@ bot = Cinch::Bot.new do
   on :message, /^!ignore .*$/ do |m|
     if $cmd_ignore && !ignored?(m, m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        if $ignorelist[m.channel]
+        if m.message.gsub(/^!ignore #{bot.nick}$/, "") != m.message
+          reply m, "ಠ_ಠ"
+        elsif $ignorelist[m.channel]
           if !$ignorelist[m.channel].include?(m.message.gsub(/^!ignore /, ""))
             $ignorelist[m.channel] += [m.message.gsub(/^!ignore /, "")]
             done m
@@ -340,7 +342,9 @@ bot = Cinch::Bot.new do
   on :message, /^!unignore .*$/ do |m|
     if $cmd_ignore && !ignored?(m, m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        if $ignorelist[m.channel]
+        if m.message.gsub(/^!unignore #{bot.nick}$/, "") != m.message
+          reply m, "ಠ_ಠ"
+        elsif $ignorelist[m.channel]
           if $ignorelist[m.channel].include?(m.message.gsub(/^!unignore /, ""))
             $ignorelist[m.channel] -= [m.message.gsub(/^!unignore /, "")]
             done m
