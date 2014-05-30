@@ -24,6 +24,7 @@ $cmd_part = false
 $cmd_part_chanop = false
 $cmd_nick = false
 $cmd_ignore = false
+$cmd_gignore = false
 $cmd_op = false
 $cmd_slap = false
 $cmd_eat = false
