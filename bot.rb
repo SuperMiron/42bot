@@ -183,9 +183,13 @@ bot = Cinch::Bot.new do
       if $cmd_part_chanop; m.user.notice("!part")
       elsif $cmd_part && is_admin?(m.user); m.user.notice("!part")
       end
+      if is_admin?(m.user) && $cmd_nick; m.user.notice("!nick") end
+      if $cmd_ignore
+        m.user.notice("!ignore")
+        m.user.notice("!unignore")
+      end
       if is_admin?(m.user)
-        if $cmd_nick; m.user.notice("!nick") end
-        if $cmd_ignore
+        if $cmd_gignore
           m.user.notice("!gignore")
           m.user.notice("!ungignore")
         end
