@@ -172,8 +172,7 @@ bot = Cinch::Bot.new do
 
   on :message, /^!(help|commands)( .*)?$/ do |m|
     if !ignored?(m, m.user)
-      m.user.notice("Commands available to you:")
-      helptext = "!help"
+      helptext = "Commands available to you are !help"
       def addhelp(s)
         helptext += ", " + s
       end
@@ -200,7 +199,7 @@ bot = Cinch::Bot.new do
       end
       if $cmd_slap; addhelp "!slap" end
       if $cmd_eat; addhelp "!eat" end
-      m.user.notice(helptext)
+      reply m, helptext
     end
   end
 
