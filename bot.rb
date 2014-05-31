@@ -23,8 +23,6 @@ bot = Cinch::Bot.new do
     exit
   end
 
-  BOLD = ""
-
   $ignorelist = Hash.new
   $gignorelist = []
 
@@ -174,32 +172,35 @@ bot = Cinch::Bot.new do
 
   on :message, /^!(help|commands)( .*)?$/ do |m|
     if !ignored?(m, m.user)
-      m.user.notice("#{BOLD}-- Commands available to you --#{BOLD}")
-      m.user.notice("!help")
+      m.user.notice("Commands available to you:")
+      helptext = "!help"
+      def addhelp(s)
+        helptext += ", " + s
+      end
       if is_admin?(m.user)
-        if $cmd_raw; m.user.notice("!raw") end
-        if $cmd_eval; m.user.notice("!eval") end
-        if $cmd_quit; m.user.notice("!quit") end
-        if $cmd_join; m.user.notice("!join") end
+        if $cmd_raw; addhelp "!raw" end
+        if $cmd_eval; addhelp "!eval" end
+        if $cmd_quit; addhelp "!quit" end
+        if $cmd_join; addhelp "!join" end
       end
-      if $cmd_part_chanop; m.user.notice("!part")
-      elsif $cmd_part && is_admin?(m.user); m.user.notice("!part")
+      if $cmd_part_chanop; addhelp "!part"
+      elsif $cmd_part && is_admin?(m.user); addhelp "!part"
       end
-      if is_admin?(m.user) && $cmd_nick; m.user.notice("!nick") end
+      if is_admin?(m.user) && $cmd_nick; addhelp "!nick" end
       if $cmd_ignore
-        m.user.notice("!ignore")
-        m.user.notice("!unignore")
+        addhelp "!ignore"
+        addhelp "!unignore"
       end
       if is_admin?(m.user)
         if $cmd_gignore
-          m.user.notice("!gignore")
-          m.user.notice("!ungignore")
+          addhelp "!gignore"
+          addhelp "!ungignore"
         end
-        if $cmd_op; m.user.notice("!op") end
+        if $cmd_op; addhelp "!op" end
       end
-      if $cmd_slap; m.user.notice("!slap") end
-      if $cmd_eat; m.user.notice("!eat") end
-      m.user.notice("#{BOLD}--    End of command list    --#{BOLD}")
+      if $cmd_slap; addhelp "!slap" end
+      if $cmd_eat; addhelp "!eat" end
+      m.user.notice(helptext)
     end
   end
 
