@@ -174,7 +174,7 @@ bot = Cinch::Bot.new do
     if !ignored?(m, m.user)
       $helptext = "Commands available to you are !help"
       def addhelp(s)
-        $helptext = $helptext + ", " + s
+        $helptext += ", " + s
       end
       if is_admin?(m.user)
         if $cmd_raw; addhelp "!raw" end
