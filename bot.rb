@@ -266,7 +266,6 @@ bot = Cinch::Bot.new do
     if $cmd_nick && !ignored?(m, m.user)
       if is_admin?(m.user)
         bot.nick = m.message.gsub(/^!nick /, "")
-        done m
       else
         noadmin m
       end
