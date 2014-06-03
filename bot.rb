@@ -192,6 +192,7 @@ bot = Cinch::Bot.new do
         addhelp "ignore"
         addhelp "unignore"
       end
+      if $cmd_ignore || $cmd_gignore; addhelp "ignorelist" end
       if is_admin?(m.user)
         if $cmd_gignore
           addhelp "gignore"
@@ -352,13 +353,34 @@ bot = Cinch::Bot.new do
             $ignorelist[m.channel] -= [m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")]
             done m
           else
-            reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")} is not on the #{m.channel} ignore list!"
+            reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")} is not on the #{m.channel} ignore list."
           end
         else
-          reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")} is not on the #{m.channel} ignore list!"
+          reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")} is not on the #{m.channel} ignore list."
         end
       else
         reply m, "You are not opped in #{m.channel}."
+      end
+    end
+  end
+
+  on :message, /^#{Regexp.quote($p)}ignorelist global( .*)?$/ do |m|
+    if $cmd_gignore && !ignored?(m, m.user)
+      if $gignorelist != []
+        reply m, "Global ignore list: " + "#{$gignorelist}".gsub(/^\[|\]$|"/, "").gsub(/host /, "[host] ")
+      else
+        reply m, "Global ignore list: (empty)"
+      end
+    end
+  end
+
+  on :message, /^#{Regexp.quote($p)}ignorelist #.*$/ do |m|
+    if $cmd_ignore && !ignored?(m, m.user)
+      channel = Channel(m.message.gsub(/(^#{Regexp.quote($p)}ignorelist | .*$)/, ""))
+      if $ignorelist[channel] && $ignorelist[channel] != []
+        reply m, "#{channel} ignore list: " + "#{$ignorelist[channel]}".gsub(/(^\[|\]$|")/, "").gsub(/host /, "[host] ")
+      else
+        reply m, "#{channel} ignore list: (empty)"
       end
     end
   end
