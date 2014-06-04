@@ -200,6 +200,7 @@ bot = Cinch::Bot.new do
         end
         if $cmd_op; addhelp "op" end
       end
+      if $cmd_randuser; addhelp "randuser" end
       if $cmd_slap; addhelp "slap" end
       if $cmd_eat; addhelp "eat" end
       reply m, $helptext
@@ -392,6 +393,16 @@ bot = Cinch::Bot.new do
       else
         reply m, "You are not opped in #{m.channel}."
       end
+    end
+  end
+
+  on :channel, /^#{Regexp.quote($p)}randuser( .*)?$/ do |m|
+    if $cmd_randuser && !ignored?(m, m.user)
+      $users = "#{Channel('#clubpenguinwiki-shops').users}"
+      $users.gsub!(/(#<Bot nick="wafflz">=>\[\], |^{|}$)/, "")
+      $users.gsub!(/((^| )#<User nick="|">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\])/, "")
+      $users = $users.split(",")
+      reply m, $users.sample
     end
   end
 
