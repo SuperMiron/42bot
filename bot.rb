@@ -398,11 +398,11 @@ bot = Cinch::Bot.new do
 
   on :channel, /^#{Regexp.quote($p)}randuser( .*)?$/ do |m|
     if $cmd_randuser && !ignored?(m, m.user)
-      $users = "#{Channel('#clubpenguinwiki-shops').users}"
-      $users.gsub!(/(#<Bot nick="wafflz">=>\[\], |^{|}$)/, "")
-      $users.gsub!(/((^| )#<User nick="|">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\])/, "")
-      $users = $users.split(",")
-      reply m, $users.sample
+      users = "#{m.channel.users}"
+      users.gsub!(/(\#<Bot nick="#{bot.nick}">=>\[\], |^{|}$)/, "")
+      users.gsub!(/((^| )\#<User nick="|">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\])/, "")
+      users = users.split(",")
+      reply m, users.sample
     end
   end
 
