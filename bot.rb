@@ -23,7 +23,7 @@ bot = Cinch::Bot.new do
     exit
   end
 
-  $p = $prefix
+  $p = Regexp.quote($prefix)
 
   $ignorelist = Hash.new
   $gignorelist = []
@@ -172,11 +172,11 @@ bot = Cinch::Bot.new do
 
   ### COMMANDS
 
-  on :message, /^#{Regexp.quote($p)}(help|commands)( .*)?$/ do |m|
+  on :message, /^#{$p}(help|commands)( .*)?$/ do |m|
     if !ignored?(m, m.user)
-      $helptext = "Commands available to you are #{$p}help"
+      $helptext = "Commands available to you are #{$prefix}help"
       def addhelp(s)
-        $helptext += ", " + $p + s
+        $helptext += ", " + $prefix + s
       end
       if is_admin?(m.user)
         if $cmd_raw; addhelp "raw" end
@@ -210,10 +210,10 @@ bot = Cinch::Bot.new do
 
   ## admin
 
-  on :message, /^#{Regexp.quote($p)}raw .*$/ do |m|
+  on :message, /^#{$p}raw .*$/ do |m|
     if $cmd_raw && !ignored?(m, m.user)
       if is_admin?(m.user)
-        bot.irc.send m.message.gsub(/^#{Regexp.quote($p)}raw /, "")
+        bot.irc.send m.message.gsub(/^#{$p}raw /, "")
         done m
       else
         noadmin m
@@ -221,10 +221,10 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}eval .*$/ do |m|
+  on :message, /^#{$p}eval .*$/ do |m|
     if $cmd_eval && !ignored?(m, m.user)
       if is_admin?(m.user)
-        eval m.message.gsub(/^#{Regexp.quote($p)}eval /, "")
+        eval m.message.gsub(/^#{$p}eval /, "")
         done m
       else
         noadmin m
@@ -232,7 +232,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}quit( .*)?$/ do |m|
+  on :message, /^#{$p}quit( .*)?$/ do |m|
     if $cmd_quit && !ignored?(m, m.user)
       if is_admin?(m.user)
         reply m, "Disconnecting..."
@@ -244,10 +244,10 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}join .*$/ do |m|
+  on :message, /^#{$p}join .*$/ do |m|
     if $cmd_join && !ignored?(m, m.user)
       if is_admin?(m.user)
-        Channel(m.message.gsub(/^#{Regexp.quote($p)}join /, "")).join
+        Channel(m.message.gsub(/^#{$p}join /, "")).join
         done m
       else
         noadmin m
@@ -255,10 +255,10 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}part .*$/ do |m|
+  on :message, /^#{$p}part .*$/ do |m|
     if $cmd_part && !ignored?(m, m.user)
       if is_admin?(m.user)
-        Channel(m.message.gsub(/^#{Regexp.quote($p)}part /, "")).part
+        Channel(m.message.gsub(/^#{$p}part /, "")).part
         done m
       else
         noadmin m
@@ -266,24 +266,24 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}nick .*$/ do |m|
+  on :message, /^#{$p}nick .*$/ do |m|
     if $cmd_nick && !ignored?(m, m.user)
       if is_admin?(m.user)
-        bot.nick = m.message.gsub(/^#{Regexp.quote($p)}nick /, "")
+        bot.nick = m.message.gsub(/^#{$p}nick /, "")
       else
         noadmin m
       end
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}gignore .*$/ do |m|
+  on :message, /^#{$p}gignore .*$/ do |m|
     if $cmd_gignore && !ignored?(m, m.user)
       if is_admin?(m.user)
-        if !$gignorelist.include?(m.message.gsub(/^#{Regexp.quote($p)}gignore /, ""))
-          $gignorelist += [m.message.gsub(/^#{Regexp.quote($p)}gignore /, "")]
+        if !$gignorelist.include?(m.message.gsub(/^#{$p}gignore /, ""))
+          $gignorelist += [m.message.gsub(/^#{$p}gignore /, "")]
           done m
         else
-          reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}gignore /, "")} is already on the global ignore list!"
+          reply m, "#{m.message.gsub(/^#{$p}gignore /, "")} is already on the global ignore list!"
         end
       else
         noadmin m
@@ -291,14 +291,14 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}ungignore .*$/ do |m|
+  on :message, /^#{$p}ungignore .*$/ do |m|
     if $cmd_gignore && !ignored?(m, m.user)
       if is_admin?(m.user)
-        if $gignorelist.include?(m.message.gsub(/^#{Regexp.quote($p)}ungignore /, ""))
-          $gignorelist -= [m.message.gsub(/^#{Regexp.quote($p)}ungignore /, "")]
+        if $gignorelist.include?(m.message.gsub(/^#{$p}ungignore /, ""))
+          $gignorelist -= [m.message.gsub(/^#{$p}ungignore /, "")]
           done m
         else
-          reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}ungignore /, "")} is not on the global ignore list!"
+          reply m, "#{m.message.gsub(/^#{$p}ungignore /, "")} is not on the global ignore list!"
         end
       else
         noadmin m
@@ -306,7 +306,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :channel, /^#{Regexp.quote($p)}op( .*)?$/ do |m|
+  on :channel, /^#{$p}op( .*)?$/ do |m|
     if $cmd_op && !ignored?(m, m.user)
 	  if is_admin?(m.user)
 	    if m.channel.opped?(bot.nick)
@@ -322,20 +322,20 @@ bot = Cinch::Bot.new do
 
   ## user
 
-  on :message, /^#{Regexp.quote($p)}ignore .*$/ do |m|
+  on :message, /^#{$p}ignore .*$/ do |m|
     if $cmd_ignore && !ignored?(m, m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        if m.message.gsub(/^#{Regexp.quote($p)}ignore #{bot.nick}$/, "") != m.message
+        if m.message.gsub(/^#{$p}ignore #{bot.nick}$/, "") != m.message
           reply m, "ಠ_ಠ"
         elsif $ignorelist[m.channel]
-          if !$ignorelist[m.channel].include?(m.message.gsub(/^#{Regexp.quote($p)}ignore /, ""))
-            $ignorelist[m.channel] += [m.message.gsub(/^#{Regexp.quote($p)}ignore /, "")]
+          if !$ignorelist[m.channel].include?(m.message.gsub(/^#{$p}ignore /, ""))
+            $ignorelist[m.channel] += [m.message.gsub(/^#{$p}ignore /, "")]
             done m
           else
-            reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}ignore /, "")} is already on the #{m.channel} ignore list!"
+            reply m, "#{m.message.gsub(/^#{$p}ignore /, "")} is already on the #{m.channel} ignore list!"
           end
         else
-          $ignorelist[m.channel] = [m.message.gsub(/^#{Regexp.quote($p)}ignore /, "")]
+          $ignorelist[m.channel] = [m.message.gsub(/^#{$p}ignore /, "")]
           done m
         end
       else
@@ -344,20 +344,20 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}unignore .*$/ do |m|
+  on :message, /^#{$p}unignore .*$/ do |m|
     if $cmd_ignore && !ignored?(m, m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
-        if m.message.gsub(/^#{Regexp.quote($p)}unignore #{bot.nick}$/, "") != m.message
+        if m.message.gsub(/^#{$p}unignore #{bot.nick}$/, "") != m.message
           reply m, "ಠ_ಠ"
         elsif $ignorelist[m.channel]
-          if $ignorelist[m.channel].include?(m.message.gsub(/^#{Regexp.quote($p)}unignore /, ""))
-            $ignorelist[m.channel] -= [m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")]
+          if $ignorelist[m.channel].include?(m.message.gsub(/^#{$p}unignore /, ""))
+            $ignorelist[m.channel] -= [m.message.gsub(/^#{$p}unignore /, "")]
             done m
           else
-            reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")} is not on the #{m.channel} ignore list."
+            reply m, "#{m.message.gsub(/^#{$p}unignore /, "")} is not on the #{m.channel} ignore list."
           end
         else
-          reply m, "#{m.message.gsub(/^#{Regexp.quote($p)}unignore /, "")} is not on the #{m.channel} ignore list."
+          reply m, "#{m.message.gsub(/^#{$p}unignore /, "")} is not on the #{m.channel} ignore list."
         end
       else
         reply m, "You are not opped in #{m.channel}."
@@ -365,7 +365,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}ignorelist global( .*)?$/ do |m|
+  on :message, /^#{$p}ignorelist global( .*)?$/ do |m|
     if $cmd_gignore && !ignored?(m, m.user)
       if $gignorelist != []
         reply m, "Global ignore list: " + "#{$gignorelist}".gsub(/^\[|\]$|"/, "").gsub(/host /, "[host] ")
@@ -375,9 +375,9 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}ignorelist #.*$/ do |m|
+  on :message, /^#{$p}ignorelist #.*$/ do |m|
     if $cmd_ignore && !ignored?(m, m.user)
-      channel = Channel(m.message.gsub(/(^#{Regexp.quote($p)}ignorelist | .*$)/, ""))
+      channel = Channel(m.message.gsub(/(^#{$p}ignorelist | .*$)/, ""))
       if $ignorelist[channel] && $ignorelist[channel] != []
         reply m, "#{channel} ignore list: " + "#{$ignorelist[channel]}".gsub(/(^\[|\]$|")/, "").gsub(/host /, "[host] ")
       else
@@ -386,7 +386,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :channel, /^#{Regexp.quote($p)}part$/ do |m|
+  on :channel, /^#{$p}part$/ do |m|
     if $cmd_part_chanop && !ignored?(m, m.user)
       if is_admin?(m.user) || m.channel.opped?(m.user)
         m.channel.part
@@ -396,7 +396,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :channel, /^#{Regexp.quote($p)}randuser( .*)?$/ do |m|
+  on :channel, /^#{$p}randuser( .*)?$/ do |m|
     if $cmd_randuser && !ignored?(m, m.user)
       users = "#{m.channel.users}"
       users.gsub!(/(^{|}$)/, "")
@@ -408,15 +408,15 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}slap( .*)?$/ do |m|
+  on :message, /^#{$p}slap( .*)?$/ do |m|
     if $cmd_slap && !ignored?(m, m.user)
       action m, "slaps #{m.user} with a 1989 Macintosh"
     end
   end
 
-  on :message, /^#{Regexp.quote($p)}eat( .*)?$/ do |m|
+  on :message, /^#{$p}eat( .*)?$/ do |m|
     if $cmd_eat && !ignored?(m, m.user)
-      action m, "eats" + m.message.gsub(/^#{Regexp.quote($p)}eat/, "")
+      action m, "eats" + m.message.gsub(/^#{$p}eat/, "")
     end
   end
 end
