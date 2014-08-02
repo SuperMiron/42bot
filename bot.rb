@@ -175,9 +175,9 @@ bot = Cinch::Bot.new do
 
   on :message, /^#{$p}(help|commands)( .*)?$/ do |m|
     if !ignored?(m, m.user)
-      helptext = "Commands available to you are #{$prefix}help, #{$prefix}commands"
+      $helptext = "Commands available to you are #{$prefix}help, #{$prefix}commands"
       def addhelp(s)
-        helptext += ", " + $prefix + s
+        $helptext += ", " + $prefix + s
       end
       if is_admin?(m.user)
         if $cmd_raw; addhelp "raw" end
@@ -204,7 +204,7 @@ bot = Cinch::Bot.new do
       if $cmd_randuser; addhelp "randuser" end
       if $cmd_slap; addhelp "slap" end
       if $cmd_eat; addhelp "eat" end
-      reply m, helptext
+      reply m, $helptext
     end
   end
 
