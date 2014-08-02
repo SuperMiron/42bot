@@ -2,6 +2,7 @@
 
 $nick = "42bot" # The nick you want the bot to have
 $user = "42bot" # The username you want the bot to have
+#$password = "fakepass" # Uncomment this if you want to use a server password
 #$sasl_username = "42bot" # Uncomment this if you want to use SASL
 #$sasl_password = "fakepass" # Uncomment this if you want to use SASL
 $server = "irc.example" # The IRC server you want the bot to connect to

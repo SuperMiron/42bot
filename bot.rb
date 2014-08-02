@@ -9,7 +9,8 @@ bot = Cinch::Bot.new do
       c.nick = $nick
       c.user = $user
       c.realname = "https://github.com/SuperMiron/42bot"
-      if ( $sasl_username && $sasl_password )
+      if $password; c.password = $password end
+      if $sasl_username && $sasl_password
         c.sasl.username = $sasl_username
         c.sasl.password = $sasl_password
       end
