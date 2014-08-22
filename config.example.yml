@@ -1,0 +1,37 @@
+# Example configuration file for 42bot - rename this to config.yml and start editing below this line.
+
+nick: "42bot"
+user: "42bot"
+#serverpass: "fakepass"
+#sasl:
+#  username: "42bot"
+#  password: "fakepass"
+server: 'irc.example"
+ssl: false
+port: 6667
+channels:
+  - "#adminchan"
+  - "#chan1"
+  - "#chan2"
+adminchannel: "#adminchan"
+as:
+  enablechans: "all"
+  disablechans:
+    - "#channel1"
+    - "#channel2"
+prefix: "!"
+
+commands:
+  raw: false
+  eval: false
+  quit: false
+  join: false
+  part: false
+  part_chanop: false
+  nick: false
+  ignore: false
+  gignore: false
+  op: false
+  randuser: false
+  slap: false
+  eat: false
