@@ -4,31 +4,31 @@ require 'yaml'
 require 'cinch'
 
 bot = Cinch::Bot.new do
-  config = YAML.load_file('config.yml')
+  $config = YAML.load_file('config.yml')
 
-  if config["nick"] && config["user"] && config["server"] && config["port"] && config["channels"] && config["adminchannel"] && config["prefix"] && config["commands"]
+  if $config["nick"] && $config["user"] && $config["server"] && $config["port"] && $config["channels"] && $config["adminchannel"] && $config["prefix"] && $config["commands"]
     configure do |c|
-      c.nick = config["nick"]
-      c.user = config["user"]
+      c.nick = $config["nick"]
+      c.user = $config["user"]
       c.realname = "https://github.com/SuperMiron/42bot"
-      if config["serverpass"]; c.password = config["serverpass"] end
-      if config["sasl"]["username"] && config["sasl"]["password"]
-        c.sasl.username = config["sasl"]["username"]
-        c.sasl.password = config["sasl"]["password"]
+      if $config["serverpass"]; c.password = $config["serverpass"] end
+      if $config["sasl"]["username"] && $config["sasl"]["password"]
+        c.sasl.username = $config["sasl"]["username"]
+        c.sasl.password = $config["sasl"]["password"]
       end
-      c.server = config["server"]
-      c.ssl.use = config["ssl"]
-      c.port = config["port"].to_s
-      c.channels = config["channels"]
+      c.server = $config["server"]
+      c.ssl.use = $config["ssl"]
+      c.port = $config["port"].to_s
+      c.channels = $config["channels"]
     end
   else
     puts "The bot was not configured correctly."
     exit
   end
 
-  $cmd = config["commands"]
+  $cmd = $config["commands"]
 
-  $prefix = config["prefix"]
+  $prefix = $config["prefix"]
   $p = Regexp.quote($prefix)
 
   $ignorelist = Hash.new
@@ -37,7 +37,7 @@ bot = Cinch::Bot.new do
   helpers do
 
     def is_admin?(user)
-      if Channel(config["adminchannel"]).opped?(user); true else false end
+      if Channel($config["adminchannel"]).opped?(user); true else false end
     end
 
     def ignored?(m, user)
@@ -75,7 +75,7 @@ bot = Cinch::Bot.new do
   ### ARTIFICIAL STUPIDITY
 
   on :channel, /^.+ .*$/ do |m|
-    if !ignored?(m, m.user) && ( m.message.gsub(/^#{bot.nick}.? .*$/, "") != m.message && ( ( config["as"]["enablechans"].include?(m.channel) || config["as"]["enablechans"] == "all" ) && !config["as"]["disablechans"].include?(m.channel) && config["as"]["disablechans"] != "all") )
+    if !ignored?(m, m.user) && ( m.message.gsub(/^#{bot.nick}.? .*$/, "") != m.message && ( ( $config["as"]["enablechans"] && ( $config["as"]["enablechans"].include?(m.channel) || $config["as"]["enablechans"] == "all" ) ) && ( !$config["as"]["disablechans"] || !$config["as"]["disablechans"].include?(m.channel) ) && $config["as"]["disablechans"] != "all" ) )
       msg = m.message.gsub(/^#{bot.nick}.? /, "")
       if msg.gsub(/\?$/, "") != msg # messages ending with a question mark
         if msg.gsub(/^[Ww]ho are you\?$/, "") != msg
