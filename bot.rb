@@ -12,7 +12,7 @@ bot = Cinch::Bot.new do
       c.user = $config["user"]
       c.realname = "https://github.com/SuperMiron/42bot"
       if $config["serverpass"]; c.password = $config["serverpass"] end
-      if $config["sasl"]["username"] && $config["sasl"]["password"]
+      if $config["sasl"] && $config["sasl"]["username"] && $config["sasl"]["password"]
         c.sasl.username = $config["sasl"]["username"]
         c.sasl.password = $config["sasl"]["password"]
       end
