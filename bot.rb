@@ -414,9 +414,15 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^#{$p}slap( .*)?$/ do |m|
+  on :message, /^#{$p}slap$/ do |m|
     if $cmd["slap"] && !ignored?(m, m.user)
       action m, "slaps #{m.user} with a 1989 Macintosh"
+    end
+  end
+
+  on :message, /^#{$p}slap .*$/ do |m|
+    if $cmd["slap"] && !ignored?(m, m.user)
+      action m, "slaps" + m.message.gsub(/^#{$p}slap/, "") + " with a 1989 Macintosh"
     end
   end
 
