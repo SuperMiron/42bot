@@ -391,21 +391,23 @@ bot = Cinch::Bot.new do
 
   on :message, /^#{$p}ignorelist #.*$/ do |m|
     if $cmd["ignore"] && !ignored?(m, m.user)
-      channel = Channel(m.message.gsub(/(^#{$p}ignorelist | .*$)/, ""))
-      if $ignorelist[channel] && $ignorelist[channel] != []
-        reply m, "#{channel} ignore list: " + "#{$ignorelist[channel]}".gsub(/(^\[|\]$|")/, "").gsub(/host:/, "[host] ")
+      cmd = m.message.split(" ", 3)
+      channel = cmd[1]
+      if $ignorelist[chan] && $ignorelist[chan] != []
+        reply m, "#{chan} ignore list: " + "#{$ignorelist[chan]}".gsub(/(^\[|\]$|")/, "").gsub(/host:/, "[host] ")
       else
-        reply m, "#{channel} ignore list: (empty)"
+        reply m, "#{chan} ignore list: (empty)"
       end
     end
   end
 
   on :message, /^#{$p}ignorelist$/ do |m|
     if $cmd["ignore"] && !ignored?(m, m.user)
-      if $ignorelist[m.channel] && $ignorelist[m.channel] != []
-        reply m, "#{m.channel} ignore list: " + "#{$ignorelist[m.channel]}".gsub(/(^\[|\]$|")/, "").gsub(/host:/, "[host] ")
+      chan = m.channel.name
+      if $ignorelist[chan] && $ignorelist[chan] != []
+        reply m, "#{chan} ignore list: " + "#{$ignorelist[chan]}".gsub(/(^\[|\]$|")/, "").gsub(/host:/, "[host] ")
       else
-        reply m, "#{m.channel} ignore list: (empty)"
+        reply m, "#{chan} ignore list: (empty)"
       end
     end
   end
