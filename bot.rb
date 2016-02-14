@@ -403,7 +403,7 @@ bot = Cinch::Bot.new do
 
   on :message, /^#{$p}ignorelist$/ do |m|
     if $cmd["ignore"] && !ignored?(m, m.user)
-      chan = m.channel.name
+      chan = m.channel
       if $ignorelist[chan] && $ignorelist[chan] != []
         reply m, "#{chan} ignore list: " + "#{$ignorelist[chan]}".gsub(/(^\[|\]$|")/, "").gsub(/host:/, "[host] ")
       else
