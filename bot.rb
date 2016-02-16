@@ -430,13 +430,7 @@ bot = Cinch::Bot.new do
 
   on :channel, /^#{$p}randuser( .*)?$/ do |m|
     if $cmd["randuser"] && !ignored?(m, m.user)
-      users = "#{m.channel.users}"
-      users.gsub!(/(^{|}$)/, "")
-      users.gsub!(/(\#<Bot nick="#{bot.nick}">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\], |, \#<Bot nick="#{bot.nick}">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\])/, "")
-      users.gsub!(/(\#<User nick="#{m.user}">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\], |, \#<User nick="#{m.user}">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\])/, "")
-      users.gsub!(/((^| )\#<User nick="|">=>\[("."(, "."(, "."(, "."(, ".")?)?)?)?)?\])/, "")
-      users = users.split(",")
-      reply m, users.sample
+      reply m, m.channel.users.to_a.sample[0].nick
     end
   end
 
