@@ -382,7 +382,8 @@ bot = Cinch::Bot.new do
   on :message, /^#{$p}ignorelist global( .*)?$/ do |m|
     if $cmd["gignore"] && !ignored?(m, m.user)
       if $gignorelist != []
-        reply m, "Global ignore list: " + $gignorelist.to_s.gsub(/^\[|\]$|"/, "").gsub(/host:/, "[host] ")
+        list = $gignorelist.join(", ")
+        reply m, "Global ignore list: #{list}".gsub(/ host:/, " [host] ")
       else
         reply m, "Global ignore list: (empty)"
       end
@@ -394,7 +395,8 @@ bot = Cinch::Bot.new do
       cmd = m.message.split(" ", 3)
       chan = Channel(cmd[1])
       if $ignorelist[chan] && $ignorelist[chan] != []
-        reply m, "#{chan} ignore list: " + "#{$ignorelist[chan]}".gsub(/(^\[|\]$|")/, "").gsub(/host:/, "[host] ")
+        list = $ignorelist[chan].join(", ")
+        reply m, "#{chan} ignore list: #{list}".gsub(/ host:/, " [host] ")
       else
         reply m, "#{chan} ignore list: (empty)"
       end
@@ -405,7 +407,8 @@ bot = Cinch::Bot.new do
     if $cmd["ignore"] && !ignored?(m, m.user)
       chan = m.channel
       if $ignorelist[chan] && $ignorelist[chan] != []
-        reply m, "#{chan} ignore list: " + "#{$ignorelist[chan]}".gsub(/(^\[|\]$|")/, "").gsub(/host:/, "[host] ")
+        list = $ignorelist[chan].join(", ")
+        reply m, "#{chan} ignore list: #{list}".gsub(/ host:/, " [host] ")
       else
         reply m, "#{chan} ignore list: (empty)"
       end
