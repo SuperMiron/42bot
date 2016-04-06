@@ -44,11 +44,11 @@ bot = Cinch::Bot.new do
       if is_admin?(user) || !$cmd["ignore"]
         false
       elsif $ignorelist[m.channel]
-        if ( ( $gignorelist.include?("#{user.nick}") || $gignorelist.include?("host:#{user.host}") ) || ( $ignorelist[m.channel].include?("#{user.nick}") || $ignorelist[m.channel].include?("host:#{user.host}") ) ) && !is_admin?(user) && $cmd["ignore"]
+        if ( $gignorelist.any? { |x| m.user.match(x) } || $ignorelist[m.channel].any? { |x| m.user.match(x) } ) && !is_admin?(user) && $cmd["ignore"]
           true else false
         end
       else
-        if ( $gignorelist.include?("#{user.nick}") || $gignorelist.include?("host:#{user.host}") )
+        if $gignorelist.any? { |x| m.user.match(x) } && !is_admin?(user) && $cmd["ignore"]
           true else false
         end
       end
@@ -291,8 +291,12 @@ bot = Cinch::Bot.new do
       if is_admin?(m.user)
         cmd = m.message.split(" ", 3)
         if !$gignorelist.include?(cmd[1])
-          $gignorelist += [cmd[1]]
-          done m
+          if cmd[1].gsub(/^.*!.*@.*$/, "") != cmd[1]
+            $gignorelist += [cmd[1]]
+            done m
+          else
+            reply m, "Hostmask #{cmd[1]} is invalid!"
+          end
         else
           reply m, "#{cmd[1]} is already on the global ignore list!"
         end
@@ -342,14 +346,22 @@ bot = Cinch::Bot.new do
           reply m, "ಠ_ಠ"
         elsif $ignorelist[m.channel]
           if !$ignorelist[m.channel].include?(cmd[1])
-            $ignorelist[m.channel] += [cmd[1]]
-            done m
+            if cmd[1].gsub(/^.*!.*@.*$/, "") != cmd[1]
+              $ignorelist[m.channel] += [cmd[1]]
+              done m
+            else
+              reply m, "Hostmask #{cmd[1]} is invalid!"
+            end
           else
             reply m, "#{cmd[1]} is already on the #{m.channel} ignore list!"
           end
         else
-          $ignorelist[m.channel] = [cmd[1]]
-          done m
+          if cmd[1].gsub(/^.*!.*@.*$/, "") != cmd[1]
+            $ignorelist[m.channel] = [cmd[1]]
+            done m
+          else
+            reply m, "Hostmask #{cmd[1]} is invalid!"
+          end
         end
       else
         reply m, "You are not opped in #{m.channel}."
@@ -383,7 +395,7 @@ bot = Cinch::Bot.new do
     if $cmd["gignore"] && !ignored?(m, m.user)
       if $gignorelist != []
         list = $gignorelist.join(", ")
-        reply m, "Global ignore list: #{list}".gsub(/ host:/, " [host] ")
+        reply m, "Global ignore list: #{list}"
       else
         reply m, "Global ignore list: (empty)"
       end
@@ -396,7 +408,7 @@ bot = Cinch::Bot.new do
       chan = Channel(cmd[1])
       if $ignorelist[chan] && $ignorelist[chan] != []
         list = $ignorelist[chan].join(", ")
-        reply m, "#{chan} ignore list: #{list}".gsub(/ host:/, " [host] ")
+        reply m, "#{chan} ignore list: #{list}"
       else
         reply m, "#{chan} ignore list: (empty)"
       end
